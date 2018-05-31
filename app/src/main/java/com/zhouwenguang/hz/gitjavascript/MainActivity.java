@@ -47,7 +47,6 @@ public class MainActivity extends Activity {
 	@SuppressLint("SetJavaScriptEnabled")
 	private void init() {
 		webView = (WebView) findViewById(R.id.myweb);
-
 		webView.getSettings().setJavaScriptEnabled(true);
 		webView.addJavascriptInterface(new MyJavaScript(this, handler),
 				"myjavascript");
@@ -73,7 +72,6 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 		Log.d("TAG", "requestCode" + requestCode + "\t resultCode" + resultCode
 				+ "\t" + data);
@@ -91,7 +89,6 @@ public class MainActivity extends Activity {
 					Calendar.getInstance(Locale.CHINA))
 					+ ".jpg";
 			Bundle bundle = data.getExtras();
-			// ��ȡ������ص����ݣ���ת��ΪͼƬ��ʽ
 			Bitmap bitmap = (Bitmap) bundle.get("data");
 			FileOutputStream fout = null;
 			File file = new File("/sdcard/pintu/");
@@ -120,7 +117,6 @@ public class MainActivity extends Activity {
 			String str1=bitmaptoString(bitmap);
 			Log.d("TAG....", str1.toString());
 			Log.d("TAG....", str.length()+"");
-			// ������õ�html����
 			String url ="javascript:printInfo('data:image/png;base64,"+str1+"')";
 			webView.loadUrl(url);
 

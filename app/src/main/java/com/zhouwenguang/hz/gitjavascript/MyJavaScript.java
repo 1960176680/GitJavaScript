@@ -30,93 +30,80 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
-public class MyJavaScript {  
+public class MyJavaScript {
 
-    private static final String[] PHONES_PROJECTION = new String[] {  
-    Phone.DISPLAY_NAME, Phone.NUMBER, Photo.PHOTO_ID,Phone.CONTACT_ID };  
+    private static final String[] PHONES_PROJECTION = new String[] {
+    Phone.DISPLAY_NAME, Phone.NUMBER, Photo.PHOTO_ID,Phone.CONTACT_ID };
 
 	public static final int CAMERA  = 0x01;
 
-    private static final int PHONES_DISPLAY_NAME_INDEX = 0;  
+    private static final int PHONES_DISPLAY_NAME_INDEX = 0;
 
-    private static final int PHONES_NUMBER_INDEX = 1;  
-      
+    private static final int PHONES_NUMBER_INDEX = 1;
 
-    private static final int PHONES_PHOTO_ID_INDEX = 2;  
-     
 
-    private static final int PHONES_CONTACT_ID_INDEX = 3;  
-      
+    private static final int PHONES_PHOTO_ID_INDEX = 2;
 
-    private ArrayList<String> mContactsName = new ArrayList<String>();  
-      
 
-    private ArrayList<String> mContactsNumber = new ArrayList<String>();  
+    private static final int PHONES_CONTACT_ID_INDEX = 3;
 
-    private ArrayList<Bitmap> mContactsPhonto = new ArrayList<Bitmap>(); 
+
+    private ArrayList<String> mContactsName = new ArrayList<String>();
+
+
+    private ArrayList<String> mContactsNumber = new ArrayList<String>();
+
+    private ArrayList<Bitmap> mContactsPhonto = new ArrayList<Bitmap>();
 
     private ArrayList<LinkMan> linkMans = new ArrayList<LinkMan>();
-      
-	 private final int DIALOG          = 0;
-	 private final int REQUEST_CONTACT = 1;
-    private WebView webview;  
 
-    private Handler handler;  
+	 private final int DIALOG          = 0;
+	 private final int REQUEST_CONTACT = 2;
+    private WebView webview;
+
+    private Handler handler;
      private Context mContext;
-    public MyJavaScript(Context context,Handler handler){  
-        this.handler = handler;  
-        webview = (WebView) ((Activity)context).findViewById(R.id.myweb); 
+    public MyJavaScript(Context context,Handler handler){
+        this.handler = handler;
+        webview = (WebView) ((Activity)context).findViewById(R.id.myweb);
          mContext  =  context;
-    }  
-//    /* 
+    }
+//    /*
 //     * java������ʾ��ҳ���첽 
 //     */  
-//    public void show(){  
-//      handler.post(new Runnable() {           
-//        public void run() {  
-//       // ��Ҫ��url������,�������ݸ���ҳ  
-//        String url = "javascript:contactlist('" + generateData() + "')";  
-//        webview.loadUrl(url);  
-//        }  
-//       });  
-//    }  
-//   
-    /* 
-     * ����绰���� 
-     */  
+//    public void show(){
+//      handler.post(new Runnable() {
+//        public void run() {
+//       // ��Ҫ��url������,�������ݸ���ҳ
+//        String url = "javascript:contactlist('" + generateData() + "')";
+//        webview.loadUrl(url);
+//        }
+//       });
+//    }
+//
     @JavascriptInterface
-    public void call(final String phone){  
-          Intent intent = new Intent(Intent.ACTION_CALL,Uri.parse("tel:" + phone));  
-          mContext.startActivity(intent);  
+    public void call(final String phone){
+          Intent intent = new Intent(Intent.ACTION_CALL,Uri.parse("tel:" + phone));
+          mContext.startActivity(intent);
     } 
-    /**
-     * ���÷��Ͷ��Žӿ�
-     * @param phone �绰����
-     * @param str_content ��������
-     */
+
     @JavascriptInterface
     public void sendMsg(String phone,String str_content){  
     	String content;
     	try {
     		content = new String(str_content.getBytes(),"ISO-8859-1");
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
+
 			 Toast.makeText(mContext, "����ʧ��!", Toast.LENGTH_LONG).show();//��ʾ�ɹ�   
 			e.printStackTrace();
 		} 
-    	SmsManager manager_sms = SmsManager.getDefault();//�õ����Ź�����
-    	//���ڶ��ſ��ܽϳ����ʽ����Ų��
-    	 ArrayList<String> texts = manager_sms.divideMessage(str_content); 
+    	SmsManager manager_sms = SmsManager.getDefault();
+    	ArrayList<String> texts = manager_sms.divideMessage(str_content);
     	for(String text : texts){
     		manager_sms.sendTextMessage(phone, null, text, null, null);//�ֱ���ÿһ������
     	}
     	    Toast.makeText(mContext, "���ͳɹ�!", Toast.LENGTH_LONG).show();//��ʾ�ɹ�   	   
     } 
-    /**
-     * ����ϵͳ�������Ž���
-     * @param phone �绰����
-     * @param str_content ��������
-     */
 
     @JavascriptInterface
     public void systemSendMsg(String phone,String str_content){
@@ -133,9 +120,7 @@ public class MyJavaScript {
     	it.putExtra("sms_body", str_content);          
     	mContext.startActivity(it);
     }
-    /**
-     * ��ȡ���е���ϵ��
-     */
+
     @JavascriptInterface
     public void getAllLinkMan(){
     	 Intent intent = new Intent();
@@ -144,25 +129,16 @@ public class MyJavaScript {
          ((MainActivity) mContext).startActivityForResult(intent, REQUEST_CONTACT);
     }
    
-    /**
-     * ��ȡ�ֻ���ϵ��
-     */
+
     @JavascriptInterface
     public String getPhoneLinkMan(){
-    	//���linkMans
     	linkMans.clear();
-    	//�õ�ContentResolver����
-    	//super.onCreate(savedInstanceState);
         ContentResolver cr = mContext.getContentResolver();
-        //ȡ�õ绰���п�ʼһ��Ĺ��
         Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-        //�����ƶ����
         while(cursor.moveToNext())
         {
-            //ȡ����ϵ������
             int nameFieldColumnIndex = cursor.getColumnIndex(PhoneLookup.DISPLAY_NAME);
             String contact = cursor.getString(nameFieldColumnIndex);
-           //ȡ�õ绰����
             String ContactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
             Cursor phone = cr.query(Phone.CONTENT_URI, null, Phone.CONTACT_ID + "=" + ContactId, null, null);
             while(phone.moveToNext())

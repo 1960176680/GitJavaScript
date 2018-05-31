@@ -30,7 +30,6 @@ public class MainActivity2 extends Activity {
 	private String contactId, contactName;
 	private WebView webView;
 	private Handler handler = new Handler();
-	// �Զ���ĵ�������
 	SelectPicPopupWindow2 menuWindow;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,39 +42,27 @@ public class MainActivity2 extends Activity {
 	
 	
 	private void init() {
-		// TODO Auto-generated method stub 
 		webView = (WebView) findViewById(R.id.myweb2);
-		// ��Ҫ����webview֧��javascript
 		webView.getSettings().setJavaScriptEnabled(true);
-		// ��Ҫ����ӿ��Թ�html�пɹ�javascript���õĽӿ��� 
 		webView.addJavascriptInterface(new MyJavaScript(this, handler),
 				"myjavascript");
-		Intent intent = getIntent();// getIntent������Ŀ�а�����ԭʼintent����������������������intent��ֵ��һ��Intent���͵ı���intent
-		Bundle bundle = intent.getExtras();// .getExtras()�õ�intent�������Ķ�������
-		String url = bundle.getString("url");// getString()����ָ��key��ֵ
+		Intent intent = getIntent();
+		Bundle bundle = intent.getExtras();
+		String url = bundle.getString("url");
 		Log.d("TAGGG", "url...."+url);
 		if (null != MyApplication.ld) {
 			MyApplication.ld.dismiss();
 		}
-		WebSettings websetting = webView.getSettings();   
-		 /*����ҳ�淽ʽ2. ����ַŴ���С�İ�ť */
-//		websetting.setSupportZoom(true); 
-//		websetting.setBuiltInZoomControls(true); 
+		WebSettings websetting = webView.getSettings();
 		webView.loadUrl(url);
 	}
-	/**
-	 * ����¼�
-	 * @param v
-	 */
 	public void btnClick(View v) {
 		if(v.getId()==R.id.regGoBackLogin){
 			MainActivity2.this.finish();
 			overridePendingTransition(R.anim.in_from_left, R.anim.out_to_right);
 			
 		}else if(v.getId()==R.id.share){
-			// ʵ����SelectPicPopupWindow
 			menuWindow = new SelectPicPopupWindow2(MainActivity2.this);
-			// ��ʾ����
 			menuWindow.showAtLocation(MainActivity2.this.findViewById(R.id.main),
 					Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0); // ����layout��PopupWindow����ʾ��λ��
 		}else if(v.getId()==R.id.getByCamera){
